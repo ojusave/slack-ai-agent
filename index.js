@@ -2,7 +2,7 @@ import pkg from '@slack/bolt';
 const { App } = pkg;
 import { WebClient } from '@slack/web-api';
 import { ChatOpenAI } from '@langchain/openai';
-import { PromptTemplate } from '@langchain/core/prompts';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
 import express from 'express';
 import dotenv from 'dotenv';
 import axios from 'axios';
@@ -29,7 +29,7 @@ class SlackAIAgent {
     this.openai = new ChatOpenAI({
       model: 'gpt-4',
       temperature: 0.3,
-      openAIApiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API_KEY,
     });
     
     this.setupSlackEvents();
@@ -166,7 +166,7 @@ class SlackAIAgent {
       });
       
       // Basic title extraction
-      const titleMatch = response.data.match(/<title>(.*?)<\\/title>/i);
+      const titleMatch = response.data.match(/<title>(.*?)<\/title>/i);
       const title = titleMatch ? titleMatch[1] : `Company: ${domain}`;
       
       return {
@@ -204,8 +204,8 @@ class SlackAIAgent {
   }
 
   async analyzeWithAI(memberInfo, researchData) {
-    const prompt = new PromptTemplate({
-      template: `Analyze this new community member for fit with our commercial product.
+    const prompt = ChatPromptTemplate.fromTemplate(
+      `Analyze this new community member for fit with our commercial product.
 
 Company: ${process.env.COMPANY_NAME || 'Your Company'}
 Product: ${process.env.COMPANY_PRODUCT || 'Your Product'}
@@ -223,23 +223,21 @@ Provide a JSON response with:
 - insights: array of 3-5 key observations
 - recommendations: array of 2-4 engagement suggestions
 
-Consider job title, company size, technical background, and budget authority.`,
-      inputVariables: ['name', 'email', 'title', 'research']
-    });
+Consider job title, company size, technical background, and budget authority.`
+    );
 
     try {
       const researchSummary = researchData.length > 0 
         ? researchData.map(r => `${r.title}: ${r.content}`).join('\\n')
         : 'Limited research data available';
 
-      const formattedPrompt = await prompt.format({
+      const chain = prompt.pipe(this.openai);
+      const result = await chain.invoke({
         name: memberInfo.name,
         email: memberInfo.email || 'Not provided',
         title: memberInfo.title || 'Not provided',
         research: researchSummary
       });
-
-      const result = await this.openai.invoke(formattedPrompt);
       const responseText = result.content || result;
       
       // Clean and parse JSON
@@ -303,11 +301,21 @@ Consider job title, company size, technical background, and budget authority.`,
       });
     }
 
+    // Add color indicator as a context block instead of deprecated attachments
+    blocks.push({
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `📊 Analyzed: ${new Date().toISOString()}`
+        }
+      ]
+    });
+
     await this.webClient.chat.postMessage({
       channel: process.env.SLACK_PRIVATE_CHANNEL_ID,
       text: `New Member Analysis: ${member.name} (${analysis.fitScore}/100)`,
-      blocks,
-      attachments: [{ color, fields: [{ title: 'Analyzed', value: new Date().toISOString(), short: true }] }]
+      blocks
     });
 
     log.info(`Analysis posted to channel for ${member.name}`);
