@@ -39,7 +39,7 @@ An intelligent Slack bot that automatically researches new community members and
 ```bash
 git clone <your-repo-url>
 cd slack-ai-agent
-npm install --legacy-peer-deps
+npm install
 ```
 
 ### 2. Set Up Slack App
@@ -355,3 +355,4 @@ For support, please:
 ---
 
 **⚠️ Important**: This agent processes personal information. Ensure compliance with applicable privacy laws and your organization's data policies.
+
