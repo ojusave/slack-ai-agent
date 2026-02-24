@@ -201,7 +201,7 @@ GET /health
 ```
 Returns service health status.
 
-**Why it matters on Render:** The Blueprint sets `healthCheckPath: /health` in `render.yaml`, so Render calls this endpoint after each deploy. When it gets a 2xx (this handler returns 200 with `{ status: 'healthy', timestamp }`), Render marks the deploy live and sends traffic to it; otherwise it can retry or fail the deploy. That enables zero-downtime deploys and faster feedback when the app isn’t ready.
+**Why it matters on Render? :** The Blueprint sets `healthCheckPath: /health` in `render.yaml`, so Render calls this endpoint after each deploy. When it gets a 2xx (this handler returns 200 with `{ status: 'healthy', timestamp }`), Render marks the deploy live and sends traffic to it; otherwise it can retry or fail the deploy. That enables zero-downtime deploys and faster feedback when the app isn’t ready.
 
 ### Status Check
 ```
