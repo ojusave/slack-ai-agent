@@ -117,17 +117,11 @@ SLACK_PRIVATE_CHANNEL_ID=C1234567890  # Channel ID where reports are sent
 OPENAI_API_KEY=sk-your-openai-api-key-here
 
 # Database Configuration (from Render.com PostgreSQL)
-DB_HOST=your-render-db-hostname.oregon-postgres.render.com
-DB_PORT=5432
-DB_NAME=slack_agent
-DB_USER=your-render-db-user
-DB_PASSWORD=your-render-db-password
+DATABASE_URL=your-render-external-url
 
 # Company Information
 COMPANY_NAME=Your Company Name
 COMPANY_PRODUCT=Your Commercial Product Name
-COMPANY_WEBSITE=https://yourcompany.com
-COMPANY_DESCRIPTION=Brief description of what your company does
 ```
 
 ### 5. Find Your Private Channel ID
@@ -192,7 +186,7 @@ git push -u origin main
    - `SLACK_SIGNING_SECRET`
    - `SLACK_PRIVATE_CHANNEL_ID`
    - `OPENAI_API_KEY`
-   - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` (from step 2)
+   - `DATABASE_URL` (from step 2)
    - Update company information variables
 5. Deploy!
 
@@ -207,11 +201,7 @@ git push -u origin main
 | `SLACK_SIGNING_SECRET` | ✅ | Signing secret from Slack app |
 | `SLACK_PRIVATE_CHANNEL_ID` | ✅ | Channel ID where reports are sent |
 | `OPENAI_API_KEY` | ✅ | OpenAI API key |
-| `DB_HOST` | ✅ | Render.com PostgreSQL hostname |
-| `DB_PORT` | ✅ | Render.com PostgreSQL port (default `5432`) |
-| `DB_NAME` | ✅ | Render.com PostgreSQL database name |
-| `DB_USER` | ✅ | Render.com PostgreSQL username |
-| `DB_PASSWORD` | ✅ | Render.com PostgreSQL password |
+| `DATABASE_URL` | ✅ | Render.com PostgreSQL external database url |
 | `COMPANY_NAME` | ❌ | Your company name (used in AI analysis prompt) |
 | `COMPANY_PRODUCT` | ❌ | Your product name (used in AI analysis prompt) |
 | `COMPANY_WEBSITE` | ❌ | Your company website URL |
@@ -258,7 +248,6 @@ Research Sources:
 ├── index.js         # Main application (SlackAIAgent class)
 ├── db.js            # PostgreSQL database module
 ├── .env.example     # Environment variable template
-├── Dockerfile       # Docker container config
 ├── render.yaml      # Render.com deployment config
 └── package.json
 ```
