@@ -152,7 +152,7 @@ class SlackAIAgent {
 
     async getCompanyInfo(domain) {
         try {
-            const response = await axios.get(`https:///www.${domain}`, {
+            const response = await axios.get(`https://www.${domain}`, {
                 timeout: 5000,
                 headers: { 'User-Agent': 'Mozilla/5.0'}
             });
@@ -163,7 +163,7 @@ class SlackAIAgent {
             return {
                 url: `https:///www.${domain}`,
                 title: title,
-                content: `Company websit6e for ${domain}`,
+                content: `Company website for ${domain}`,
                 type: 'company'
             }
         } catch (error) {
@@ -311,7 +311,7 @@ class SlackAIAgent {
 
         await this.webClient.chat.postMessage({
             channel: process.env.SLACK_PRIVATE_CHANNEL_ID,
-            text: `New Mmeber Analysis: ${member.name} (${analysis.fitScore}/100)`,
+            text: `New Member Analysis: ${member.name} (${analysis.fitScore}/100)`,
             blocks
         });
 
@@ -327,7 +327,7 @@ class SlackAIAgent {
 
     async start() {
         try {
-            log.info('🗄️ Initilazing database...')
+            log.info('🗄️ Initializing database...')
             await initDatabase()
 
             const port = process.env.PORT || 3000;
@@ -340,7 +340,7 @@ class SlackAIAgent {
 
             log.info('🎉 Slack AI Agent is running!')
 
-            if (process.env.NODE_ENV === 'develoment') {
+            if (process.env.NODE_ENV === 'development') {
                 log.info(`Test endpoint: POST http://localhost:${port}/test/analyze-member`)
             }
 
