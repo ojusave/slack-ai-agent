@@ -26,12 +26,13 @@ class SlackAIAgent {
             socketMode: true,
             appToken: process.env.SLACK_APP_TOKEN
         });
-        this.WebClient = new WebClient(process.env.SLACK_BOT_TOKEN);
+        this.webClient = new WebClient(process.env.SLACK_BOT_TOKEN);
         this.openai = new ChatOpenAI({
             model: "gpt-4",
             temperature: 0.3,
             apiKey: process.env.OPENAI_API_KEY
         });
+
         this.setupSlackEvents();
         this.setupExpress();
     }
@@ -130,10 +131,10 @@ class SlackAIAgent {
         }
     }
 
-    async doBasicResearch() {
+    async doBasicResearch(memberInfo) {
         const results = [];
         try {
-            if (memberInfo.email && !this.personalEmail(memberInfo.email)) {
+                if (memberInfo.email && !this.isPersonalEmail(memberInfo.email)) {
                 const domain = memberInfo.email.split('@')[1];
                 const companyInfo = await this.getCompanyInfo(domain);
                 if (companyInfo) results.push(companyInfo);
@@ -174,7 +175,7 @@ class SlackAIAgent {
     async getGitHubInfo(name) {
         try {
             const response = await axios.get(
-                `https://api.github.com/search/users?q=${encodedURIComponent(name)}`,
+                `https://api.github.com/search/users?q=${encodeURIComponent(name)}`,
                 { timeout: 5000}
             );
 
@@ -192,6 +193,7 @@ class SlackAIAgent {
         }
         return null;
     }
+
 
     async analyzeWithAI(memberInfo, researchData) {
         const prompt = ChatPromptTemplate.fromTemplate(
@@ -217,6 +219,7 @@ class SlackAIAgent {
     Consider job title, company size, technical background, and budget 
     authority.`
         );
+
 
         try {
             const researchSummary = researchData.length > 0 
@@ -297,11 +300,11 @@ class SlackAIAgent {
         }
 
         blocks.push({
-            type: 'content',
+            type: 'context',
             elements: [
                 {
                     type: 'mrkdwn',
-                    text: `📊 Analyzed: ${new Date.toISOString()}`
+                    text: `📊 Analyzed: ${new Date().toISOString()}`
                 }
             ]
         });
@@ -320,6 +323,7 @@ class SlackAIAgent {
         const domain = email.split('@')[1]?.toLowerCase();
         return personalDomains.includes(domain);
     }
+
 
     async start() {
         try {
