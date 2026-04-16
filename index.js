@@ -161,7 +161,7 @@ class SlackAIAgent {
             const title = titleMatch ? titleMatch[1] : `Company: ${domain}`;
 
             return {
-                url: `https:///www.${domain}`,
+                url: `https://www.${domain}`,
                 title: title,
                 content: `Company websit6e for ${domain}`,
                 type: 'company'
