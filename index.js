@@ -163,7 +163,7 @@ class SlackAIAgent {
             return {
                 url: `https://www.${domain}`,
                 title: title,
-                content: `Company websit6e for ${domain}`,
+                content: `Company website for ${domain}`,
                 type: 'company'
             }
         } catch (error) {
@@ -311,7 +311,7 @@ class SlackAIAgent {
 
         await this.webClient.chat.postMessage({
             channel: process.env.SLACK_PRIVATE_CHANNEL_ID,
-            text: `New Mmeber Analysis: ${member.name} (${analysis.fitScore}/100)`,
+            text: `New Member Analysis: ${member.name} (${analysis.fitScore}/100)`,
             attachments: [
                 {
                     color: color,
@@ -332,7 +332,7 @@ class SlackAIAgent {
 
     async start() {
         try {
-            log.info('🗄️ Initilazing database...')
+            log.info('🗄️ Initializing database...')
             await initDatabase()
 
             const port = process.env.PORT || 3000;
